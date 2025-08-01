@@ -51,3 +51,21 @@ def object_reached_goal(
 
     # rewarded if the object is lifted above the threshold
     return distance < threshold
+
+
+def root_height_above_minimum(
+    env: ManagerBasedRLEnv, minimum_height: float, asset_cfg: SceneEntityCfg = SceneEntityCfg("object")
+) -> torch.Tensor:
+    """Termination condition for when the asset's root is above a minimum height.
+
+    Args:
+        env: The environment.
+        minimum_height: The minimum height above which the termination is triggered.
+        asset_cfg: The asset configuration. Defaults to SceneEntityCfg("object").
+
+    Returns:
+        The termination condition.
+    """
+    # extract the used quantities (to enable type-hinting)
+    asset: RigidObject = env.scene[asset_cfg.name]
+    return asset.data.root_pos_w[:, 2] > minimum_height
